@@ -1,0 +1,62 @@
+{
+  "name": "copper",
+  "productName": "aluminum-browser",
+  "version": "1.0.0",
+  "description": "My Electron application description",
+  "main": "init.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "make-win": "electron-forge make --platform=win32 --arch=x86_64",
+    "publish": "electron-forge publish",
+    "lint": "echo \"No linting configured\""
+  },
+  "keywords": [],
+  "author": {
+    "name": "mortada-killer0",
+    "email": "mcsplayer914@gmail.com"
+  },
+  "license": "MIT",
+  "repository": "https://www.github.com/wos-org/copper/",
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "browser",
+            "iconUrl": "favicon.ico",
+            "setupIcon": "favicon.ico"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {
+            "icon": "./favicon.png"
+          }
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.61",
+    "@electron-forge/maker-deb": "^6.0.0-beta.61",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.61",
+    "@electron-forge/maker-zip": "^6.0.0-beta.61",
+    "electron": "^15.3.1"
+  },
+  "dependencies": {
+    "electron-chrome-extensions": "^3.9.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "update-electron-app": "^2.0.1",
+    "uuid": "^8.3.2"
+  }
+}

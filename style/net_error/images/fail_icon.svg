@@ -1,0 +1,16 @@
+<svg width="16" height="16" viewBox='0 0 16 16' xmlns="http://www.w3.org/2000/svg">
+  <def>
+    <linearGradient id="g0" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color: #ff4040; stop-opacity: 1;" />
+      <stop offset="100%" style="stop-color: #c01010; stop-opacity: 1;" />
+    </linearGradient>
+  </def>
+  <style>
+    rect {
+      filter: drop-shadow(0 0.5px 0.5px #000000);
+    }
+  </style>
+  <rect x="1" y="1" rx="7" ry="7" width="14" height="14" fill="url(#g0)"/>
+  <polygon points="7,3 9,3 8.5,10 7.5,10" fill="#ffffff"/>
+  <circle cx="8" cy="12" r="1" width="2" height="2" fill="#ffffff"/>
+</svg>

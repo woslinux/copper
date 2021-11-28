@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="manifest" href="manifest.json">
+    <meta name="defaultLanguage" content="en-US">
+    <meta name="availableLanguages" content="ar-SA, en-US">
+    <link rel="localization" href="locales/{locale}.ftl">
+    <link rel="stylesheet" type="text/css" href="style/layout.css">
+    <link rel="stylesheet" type="text/css" href="style/application.css">
+    <link rel="stylesheet" type="text/css" href="style/gamer_mode.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="js/application.js"></script>
+    <script defer="" type="text/javascript" src="js/l20n.js"></script>
+    <script defer="" type="text/javascript" src="js/context_menu.js"></script>
+    <script defer="" type="text/javascript" src="js/search.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+  </head>
+  <body>
+    <div id="app-holder">
+      <section class="responsive">
+        <span class="actions">
+          <button id="close"></button>
+          <button id="maximize"></button>
+          <button id="minimize"></button>
+        </span>
+        <div class="tabbar">
+          <button id="sidetabs"></button>
+          <div id="tabs"></div>
+          <button id="newtab"></button>
+        </div>
+        <div id="navbar">
+          <button id="back"></button>
+          <button id="forward"></button>
+          <button id="reload"></button>
+          <button id="home"></button>
+          <input type="text" id="urlbar" placeholder="Type here to search or type a URL...">
+          <button id="security"></button>
+          <button id="favorite"></button>
+          <button id="find-text"></button>
+          <button id="downloads"></button>
+          <button id="library"></button>
+          <button id="addons"></button>
+          <button id="options"></button>
+        </div>
+      </section>
+      <div id="tab-views"></div>
+      <div id="context-menu"></div>
+      <div id="urlbar-results"></div>
+    </div>
+    <script type="text/javascript" src="js/window.js"></script>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="defaultLanguage" content="en-US">
+    <meta name="availableLanguages" content="en-US">
+    <title>Network Error</title>
+    <link rel="icon" type="image/png" href="images/exclamation_16.png">
+    <link rel="localization" href="locales/{locale}.ftl">
+    <link rel="stylesheet" type="text/css" href="style/layout.css">
+    <link rel="stylesheet" type="text/css" href="style/net_error/net_error.css">
+    <script defer="" type="text/javascript" src="shared/js/intl/l20n.js"></script>
+    <script defer="" type="text/javascript" src="js/net_error/net_error.js"></script>
+  </head>
+  <body role="application">
+    <div id="net-error">
+      <div class="net-error-maximized">
+        <div class="net-error-container">
+          <img src="style/net_error/images/fail_icon.svg" alt="" class="net-error-image">
+          <div class="net-error-context">
+            <h1>Error occured while loading document.</h1>
+            <p>Something happened causing this document to not load.</p>
+            <ul>
+              <li>Try reloading the document. It might've failed to load.</li>
+              <li>Check of you are connected to the network.</li>
+              <li>Disable any firewalls or restart your router.</li>
+            </ul>
+            <button id="net-error-reload">Reload</button>
+            <button id="net-error-settings">More Info</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="/shared/js/lazy_loader.js"></script>
+  </body>
+</html>

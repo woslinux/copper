@@ -1,0 +1,59 @@
+#app-holder.gamermode {
+  border-color: var(--accent-color);
+}
+.gamermode {
+  --accent-color: #c04040;
+}
+.gamermode button {
+  font-weight: bold;
+}
+.gamermode #context-menu {
+  border-radius: 8px 0 8px 0;
+  border: 2px solid var(--accent-color);
+  padding: 6px;
+}
+.gamermode #navbar {
+  background-image: linear-gradient(to top, var(--main-color-medium), var(--main-color-light));
+  border-bottom: 1px solid var(--main-color-dark);
+}
+.gamermode #newtab {
+  background-color: var(--accent-color);
+  margin-top: 4px;
+  z-index: 8;
+  height: 32px;
+}
+.gamermode #urlbar {
+  background-image: linear-gradient(to bottom, var(--main-color-medium), var(--main-color-light));
+}
+.gamermode .tab {
+  border-radius: 4px;
+  border-top: 4px solid var(--main-color-dark);
+}
+.gamermode .tab.selected {
+  border-top-color: var(--accent-color);
+}
+.gamermode .tab > .tab-info {
+  background-image: linear-gradient(to top, var(--main-color-medium), var(--main-color-light));
+  border-radius: 6px 0 6px 0;
+  border: 2px solid var(--main-color-dark);
+  padding: 4px 6px;
+}
+.gamermode .tab.selected > .tab-info {
+  border-color: var(--accent-color);
+}
+.gamermode.sidetabs .tabbar {
+  background-image: linear-gradient(to left, var(--main-color-medium), var(--main-color-light));
+  border-right: 1px solid var(--main-color-dark);
+}
+.gamermode.sidetabs .tab {
+  border-radius: 4px;
+  border: none;
+  padding: 6px;
+}
+.gamermode.sidetabs .tab.selected {
+  border: 2px solid var(--accent-color);
+}
+[dir="rtl"] .gamermode.sidetabs .tabbar {
+  border-left: 1px solid var(--main-color-dark);
+  border-right: none;
+}
