@@ -1,13 +1,13 @@
 "use strict";
-const { app, autoUpdater, BrowserWindow, ipcMain } = require("electron");
+const { app, autoUpdater, BrowserWindow, ipcMain, protocol } = require("electron");
 const path = require("path");
 require("update-electron-app")();
-const server = "https://wos-org.github.io/deployment";
-const href = `${server}/update/browser/${process.platform}/${app.getVersion()}`;
-autoUpdater.setFeedURL({ href });
-setInterval(() => {
-  autoUpdater.checkForUpdates();
-}, 60000);
+// const server = "https://wos-org.github.io/deployment";
+// const href = `${server}/update/browser/${process.platform}/${app.getVersion()}`;
+// autoUpdater.setFeedURL({ href });
+// setInterval(() => {
+  // autoUpdater.checkForUpdates();
+// }, 60000);
 // app.setPath("appData", `${__dirname}/profile/users/global`);
 // app.setPath("home", `${__dirname}/profile/config`);
 // app.setPath("userData", `${__dirname}/profile`);
@@ -31,12 +31,12 @@ function createWindow() {
     frame: false,
     autoHideMenuBar: true,
     title: "Aluminum Browser",
-    icon: "./favicon.png",
+    icon: "assets/favicon.png",
     webPreferences: {
       devTools: true,
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
-      preload: path.join(__dirname, "./preload.js"),
+      preload: path.join(__dirname, "src/preload.js"),
       defaultEncoding: "UTF-8",
       contextIsolation: false,
       webviewTag: true,
@@ -44,8 +44,8 @@ function createWindow() {
     transparent: true
   });
   mainWindow.setMenu(null);
-  mainWindow.webContents.loadFile("index.html");
-//   mainWindow.openDevTools();
+  mainWindow.webContents.loadFile("src/index.html");
+  mainWindow.openDevTools();
   for(let index = 0; index < process.argv.length; index++) {
     if(process.argv[index].startsWith("file://")
       || process.argv[index].startsWith("http://")
@@ -77,19 +77,19 @@ function createWindow() {
       frame: false,
       autoHideMenuBar: true,
       title: "Aluminum WebIDE",
-      icon: "./webide/favicon.png",
+      icon: "assets/webide.png",
       webPreferences: {
         devTools: true,
         nodeIntegration: true,
         nodeIntegrationInWorker: true,
-        preload: path.join(__dirname, "./preload.js"),
+        preload: path.join(__dirname, "src/preload.js"),
         defaultEncoding: "UTF-8",
         contextIsolation: false,
         webviewTag: true,
       },
       transparent: true
     });
-    webIDEWindow.loadFile("./webide/index.html");
+    webIDEWindow.loadFile("webide/index.html");
     webIDEWindow.on("blur", () => {
       webIDEWindow.webContents.send("blur");
     });
@@ -109,26 +109,32 @@ app.whenReady().then(() => {
   app.on("activate", function() {
     if(BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+  protocol.registerFileProtocol("browser", (request, callback) => {
+    const url = request.url.substr(7);
+    callback({
+      path: path.normalize(`${__dirname}/src/pages/${url}`)
+    });
+  });
 });
 app.on("window-all-closed", function() {
   if(process.platform !== "darwin") app.quit();
 });
-autoUpdater.on("update-downloaded", (event, releaseNotes, releaseName) => {
-  const dialogOpts = {
-    type: "info",
-    buttons: [
-      "Restart",
-      "Ask me later"
-    ],
-    title: "Aluminum Browser Update!",
-    message: process.platform === "win32" ? releaseNotes : releaseName,
-    detail: "A new version of the browser has been downloaded. Restart the browser to apply the updates."
-  }
-  dialog.showMessageBox(dialogOpts).then((returnValue) => {
-    if (returnValue.response === 0) autoUpdater.quitAndInstall();
-  });
-});
-autoUpdater.on("error", message => {
-  console.error("There was a problem updating the browser.");
-  console.error(message);
-});
+// autoUpdater.on("update-downloaded", (event, releaseNotes, releaseName) => {
+//   const dialogOpts = {
+//     type: "info",
+//     buttons: [
+//       "Restart",
+//       "Ask me later"
+//     ],
+//     title: "Aluminum Browser Update!",
+//     message: process.platform === "win32" ? releaseNotes : releaseName,
+//     detail: "A new version of the browser has been downloaded. Restart the browser to apply the updates."
+//   }
+//   dialog.showMessageBox(dialogOpts).then((returnValue) => {
+//     if (returnValue.response === 0) autoUpdater.quitAndInstall();
+//   });
+// });
+// autoUpdater.on("error", message => {
+//   console.error("There was a problem updating the browser.");
+//   console.error(message);
+// });

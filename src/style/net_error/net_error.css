@@ -21,7 +21,7 @@ button {
   width: 100vw;
   height: 100vh;
 }
-#net-error-reload {
+#reload {
   background-color: var(--accent-color);
   border: none;
   border-radius: 2rem;
@@ -30,25 +30,25 @@ button {
   transition: 250ms var(--cubic-bezier);
   width: 80px;
 }
-#net-error-reload:hover {
+#reload:hover {
   filter: brightness(1.25);
 }
-#net-error-reload:active,
-#net-error-settings:active {
+#reload:active,
+#settings:active {
   filter: brightness(0.75);
 }
-#net-error-settings {
+#settings {
   background-color: transparent;
   border: 2px solid var(--accent-color);
   border-radius: 2rem;
   padding: 10px;
   transition: 250ms var(--cubic-bezier);
 }
-#net-error-settings:hover {
+#settings:hover {
   background-color: var(--accent-color);
   color: #000000;
 }
-.net-error-container {
+.container {
   display: grid;
   grid-template-columns: 80px auto;
   grid-template-rows: auto;
@@ -57,18 +57,18 @@ button {
   width: min-content;
   height: min-content;
 }
-.net-error-container > * {
+.container > * {
   animation: netErrorSlideLeft 250ms var(--cubic-bezier);
 }
-.net-error-context {
+.context {
   min-width: 432px;
 }
-.net-error-image {
+.image {
   margin: 8px 0;
   pointer-events: none;
   width: 100%;
 }
-.net-error-maximized {
+.maximized {
   transform: translateY(-50%);
   position: relative;
   top: 50%;

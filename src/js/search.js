@@ -1,7 +1,7 @@
 document.getElementById("urlbar").addEventListener("focus", (event) => {
   var i = document.getElementById("context-menu");
   var j = document.getElementById("tab-views");
-  var k = document.querySelector(`webview.tab-webview[tab-id="${selectedTab}"]`);
+  var k = document.querySelector(`webview.tab-webview[data-uuid="${selectedTab}"]`);
   document.addEventListener("pointerup", (event) => {
     if(i.classList.contains("shown")) {
       i.classList.remove("shown");

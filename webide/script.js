@@ -7,14 +7,14 @@ var TextEditor = {
     var j = document.createElement("button");
     j.classList.add("tab");
     j.draggable = true;
-    j.style.order = document.querySelectorAll(`button.tab[tab-id]`).length;
-    j.setAttribute("tab-id", uuid.v4());
+    j.style.order = document.querySelectorAll(`button.tab[data-uuid]`).length;
+    j.setAttribute("data-uuid", uuid.v4());
     j.addEventListener("pointerdown", (event) => {
-      TextEditor.focus(j.getAttribute("tab-id"));
+      TextEditor.focus(j.getAttribute("data-uuid"));
     });
     j.addEventListener("dragstart", (event) => {
       j.style.opacity = 0.5;
-      event.dataTransfer.setData("text", event.target.getAttribute("tab-id"));
+      event.dataTransfer.setData("text", event.target.getAttribute("data-uuid"));
     });
     j.addEventListener("dragover", (event) => {
       event.preventDefault();
@@ -29,7 +29,7 @@ var TextEditor = {
     });
     j.addEventListener("dragend", (event) => {
       j.style.opacity = null;
-      document.querySelectorAll(`button.tab[tab-id]`).forEach((element) => {
+      document.querySelectorAll(`button.tab[data-uuid]`).forEach((element) => {
         if(!element.classList.contains("selected")) {
           element.classList.remove("drag");
         }
@@ -37,7 +37,7 @@ var TextEditor = {
     });
     j.addEventListener("drop", (event) => {
       event.preventDefault();
-      var data = document.querySelector(`button.tab[tab-id="${event.dataTransfer.getData("text")}"]`);
+      var data = document.querySelector(`button.tab[data-uuid="${event.dataTransfer.getData("text")}"]`);
       localStorage.setItem("lastTabOrder", j.style.order);
       j.style.order = data.style.order;
       data.style.order = localStorage.getItem("lastTabOrder");
@@ -57,16 +57,16 @@ var TextEditor = {
       j.remove();
       l1.remove();
       if(j.previousElementSibling) {
-        TextEditor.focus(j.previousElementSibling.getAttribute("tab-id"));
+        TextEditor.focus(j.previousElementSibling.getAttribute("data-uuid"));
       } else if(j.nextElementSibling) {
-        TextEditor.focus(j.nextElementSibling.getAttribute("tab-id")).click();
+        TextEditor.focus(j.nextElementSibling.getAttribute("data-uuid")).click();
       }
     });
     j.appendChild(i1);
     var j1 = document.getElementById("text-editor-views");
     var l1 = document.createElement("div");
     l1.classList.add("text-editor");
-    l1.setAttribute("tab-id", j.getAttribute("tab-id"));
+    l1.setAttribute("data-uuid", j.getAttribute("data-uuid"));
     var i2 = CodeMirror(l1, {
       mode: syntax,
       lineNumbers: true,
@@ -87,12 +87,12 @@ var TextEditor = {
 //     }
     j1.appendChild(l1);
     i.appendChild(j);
-    TextEditor.focus(j.getAttribute("tab-id"));
+    TextEditor.focus(j.getAttribute("data-uuid"));
   },
   focus: (uuid) => {
-    var i = document.querySelector(`button.tab[tab-id="${uuid}"]`);
-    var j = document.querySelector(`div.text-editor[tab-id="${uuid}"]`);
-    var deselect = document.querySelectorAll("button.tab[tab-id], webview.tab-webview[tab-id]");
+    var i = document.querySelector(`button.tab[data-uuid="${uuid}"]`);
+    var j = document.querySelector(`div.text-editor[data-uuid="${uuid}"]`);
+    var deselect = document.querySelectorAll("button.tab[data-uuid], webview.tab-webview[data-uuid]");
     deselect.forEach((element) => {
       element.classList.remove("selected");
     });

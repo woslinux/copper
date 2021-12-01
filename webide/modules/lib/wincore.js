@@ -51,12 +51,12 @@ window.onload = () => {
   });
   document.addEventListener("keydown", (event) => {
     if(event.keyCode == 17 && event.keyCode == 9) {
-      var i = document.querySelectorAll(`button.tab[tab-id]`);
+      var i = document.querySelectorAll(`button.tab[data-uuid]`);
       if(counter < i.length - 1) {
-        Browser.focus(i[counter].nextElementSibling.getAttribute("tab-id"));
+        Browser.focus(i[counter].nextElementSibling.getAttribute("data-uuid"));
         counter += 1;
       } else {
-        Browser.focus(i[0].getAttribute("tab-id"));
+        Browser.focus(i[0].getAttribute("data-uuid"));
         counter = 0;
       }
     }
@@ -81,14 +81,14 @@ var Browser = {
     var j = document.createElement("button");
     j.classList.add("tab");
     j.draggable = true;
-    j.style.order = document.querySelectorAll(`button.tab[tab-id]`).length;
-    j.setAttribute("tab-id", uuid.v4());
+    j.style.order = document.querySelectorAll(`button.tab[data-uuid]`).length;
+    j.setAttribute("data-uuid", uuid.v4());
     j.addEventListener("pointerdown", (event) => {
-      Browser.focus(j.getAttribute("tab-id"));
+      Browser.focus(j.getAttribute("data-uuid"));
     });
     j.addEventListener("dragstart", (event) => {
       j.style.opacity = 0.5;
-      event.dataTransfer.setData("text", event.target.getAttribute("tab-id"));
+      event.dataTransfer.setData("text", event.target.getAttribute("data-uuid"));
     });
     j.addEventListener("dragover", (event) => {
       event.preventDefault();
@@ -103,7 +103,7 @@ var Browser = {
     });
     j.addEventListener("dragend", (event) => {
       j.style.opacity = null;
-      document.querySelectorAll(`button.tab[tab-id]`).forEach((element) => {
+      document.querySelectorAll(`button.tab[data-uuid]`).forEach((element) => {
         if(!element.classList.contains("selected")) {
           element.classList.remove("drag");
         }
@@ -111,7 +111,7 @@ var Browser = {
     });
     j.addEventListener("drop", (event) => {
       event.preventDefault();
-      var data = document.querySelector(`button.tab[tab-id="${event.dataTransfer.getData("text")}"]`);
+      var data = document.querySelector(`button.tab[data-uuid="${event.dataTransfer.getData("text")}"]`);
       localStorage.setItem("lastTabOrder", j.style.order);
       j.style.order = data.style.order;
       data.style.order = localStorage.getItem("lastTabOrder");
@@ -130,15 +130,15 @@ var Browser = {
       j.remove();
       l1.remove();
       if(j.previousElementSibling) {
-        Browser.focus(j.previousElementSibling.getAttribute("tab-id"));
+        Browser.focus(j.previousElementSibling.getAttribute("data-uuid"));
       } else {
         if(j.nextElementSibling) {
-          Browser.focus(j.nextElementSibling.getAttribute("tab-id")).click();
+          Browser.focus(j.nextElementSibling.getAttribute("data-uuid")).click();
         } else {
-          Browser.focus(document.querySelectorAll("button.tab[tab-id]")[0].getAttribute("tab-id"));
+          Browser.focus(document.querySelectorAll("button.tab[data-uuid]")[0].getAttribute("data-uuid"));
         }
       }
-      if(document.querySelectorAll("button.tab[tab-id]").length < 1) {
+      if(document.querySelectorAll("button.tab[data-uuid]").length < 1) {
         window.close();
       }
     });
@@ -160,7 +160,7 @@ var Browser = {
     var l1 = document.createElement("webview");
     l1.classList.add("tab-webview");
     l1.src = href;
-    l1.setAttribute("tab-id", j.getAttribute("tab-id"));
+    l1.setAttribute("data-uuid", j.getAttribute("data-uuid"));
     l1.addEventListener("did-start-loading", (event) => {
       k.src = "images/loading.png";
       document.getElementById("reload").classList.add("stop");
@@ -465,7 +465,7 @@ var Browser = {
     k1.appendChild(l1);
     if(selected) {
       setTimeout(() => {
-        Browser.focus(j.getAttribute("tab-id"));
+        Browser.focus(j.getAttribute("data-uuid"));
       }, 10);
     }
     var j2 = document.createElement("div");
@@ -510,19 +510,19 @@ var Browser = {
     i.appendChild(j);
     document.getElementById("back").addEventListener("pointerup", (event) => {
       event.preventDefault();
-      if(selectedTab == j.getAttribute("tab-id")) {
+      if(selectedTab == j.getAttribute("data-uuid")) {
         l1.goBack();
       }
     });
     document.getElementById("forward").addEventListener("pointerup", (event) => {
       event.preventDefault();
-      if(selectedTab == j.getAttribute("tab-id")) {
+      if(selectedTab == j.getAttribute("data-uuid")) {
         l1.goForward();
       }
     });
     document.getElementById("reload").addEventListener("pointerup", (event) => {
       event.preventDefault();
-      if(selectedTab == j.getAttribute("tab-id")) {
+      if(selectedTab == j.getAttribute("data-uuid")) {
         if(l1.isLoading()) {
           l1.stop();
         } else {
@@ -531,14 +531,14 @@ var Browser = {
       }
     });
     document.getElementById("home").addEventListener("pointerup", (event) => {
-      if(selectedTab == j.getAttribute("tab-id")) {
+      if(selectedTab == j.getAttribute("data-uuid")) {
         l1.src = homeURL;
       }
     });
     document.getElementById("urlbar").addEventListener("keydown", (event) => {
       if(event.keyCode == 13) {
         event.target.blur();
-        if(selectedTab == j.getAttribute("tab-id")) {
+        if(selectedTab == j.getAttribute("data-uuid")) {
           if(event.target.value.startsWith("file://")
             || event.target.value.startsWith("http://")
             || event.target.value.startsWith("https://")) {
@@ -583,9 +583,9 @@ var Browser = {
     });
   },
   focus: (uuid) => {
-    var i = document.querySelector(`button.tab[tab-id="${uuid}"]`);
-    var j = document.querySelector(`webview.tab-webview[tab-id="${uuid}"]`);
-    var deselect = document.querySelectorAll("button.tab[tab-id], webview.tab-webview[tab-id]");
+    var i = document.querySelector(`button.tab[data-uuid="${uuid}"]`);
+    var j = document.querySelector(`webview.tab-webview[data-uuid="${uuid}"]`);
+    var deselect = document.querySelectorAll("button.tab[data-uuid], webview.tab-webview[data-uuid]");
     deselect.forEach((element) => {
       element.classList.remove("selected");
     });

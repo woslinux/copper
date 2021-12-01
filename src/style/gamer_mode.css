@@ -22,6 +22,20 @@
   z-index: 8;
   height: 32px;
 }
+.gamermode #security:before {
+  background-color: #c04040;
+  background-size: 16px;
+  width: 16px;
+  -webkit-mask-image: url("../images/exclamation_16.png");
+}
+.gamermode #security.https:before {
+  background-color: #40c040;
+  -webkit-mask-image: url("../images/lock_16.png");
+}
+.gamermode #security.file:before {
+  background-color: #c0a040;
+  -webkit-mask-image: url("../images/file_16.png");
+}
 .gamermode #urlbar {
   background-image: linear-gradient(to bottom, var(--main-color-medium), var(--main-color-light));
 }

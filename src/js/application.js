@@ -24,8 +24,9 @@ var bookmarkList = [];
 var counter = 0;
 var selectedTab = window.location.hash.substring(1).split("=")[1];
 const homeURL = "https://www.google.com/";
-window.onload = () => {
-  const { ipcRenderer } = require("electron");
+
+window.addEventListener("load", (event) => {
+  const { ipcRenderer, systemPreferences } = require("electron");
   if(localStorage.getItem("fontSize") !== null) {
     fontSize = JSON.parse(localStorage.getItem("fontSize"));
   }
@@ -51,12 +52,12 @@ window.onload = () => {
   });
   document.addEventListener("keydown", (event) => {
     if(event.keyCode == 17 && event.keyCode == 9) {
-      var i = document.querySelectorAll(`button.tab[tab-id]`);
+      var i = document.querySelectorAll(`button.tab[data-uuid]`);
       if(counter < i.length - 1) {
-        Browser.focus(i[counter].nextElementSibling.getAttribute("tab-id"));
+        Browser.focus(i[counter].nextElementSibling.getAttribute("data-uuid"));
         counter += 1;
       } else {
-        Browser.focus(i[0].getAttribute("tab-id"));
+        Browser.focus(i[0].getAttribute("data-uuid"));
         counter = 0;
       }
     }
@@ -76,7 +77,14 @@ window.onload = () => {
   document.getElementById("urlbar").addEventListener("focus", (event) => {
     event.target.select();
   });
-};
+  if(process.platform == "win32") {
+    console.log(systemPreferences.getAccentColor());
+    document.getElementById("app-holder").style.backgroundColor = `#${systemPreferences.getAccentColor()}`;
+    systemPreferences.addEventListener("accent-color-changed", (event) => {
+      document.getElementById("app-holder").style.backgroundColor = `#${event.newColor}`;
+    });
+  }
+});
 var Browser = {
   newTab: (href = homeURL, selected = true) => {
     const uuid = require("uuid");
@@ -84,14 +92,14 @@ var Browser = {
     var j = document.createElement("button");
     j.classList.add("tab");
     j.draggable = true;
-    j.style.order = document.querySelectorAll(`button.tab[tab-id]`).length;
-    j.setAttribute("tab-id", uuid.v4());
+    j.style.order = document.querySelectorAll(`button.tab[data-uuid]`).length;
+    j.setAttribute("data-uuid", uuid.v4());
     j.addEventListener("pointerdown", (event) => {
-      Browser.focus(j.getAttribute("tab-id"));
+      Browser.focus(j.getAttribute("data-uuid"));
     });
     j.addEventListener("dragstart", (event) => {
       j.style.opacity = 0.5;
-      event.dataTransfer.setData("text", event.target.getAttribute("tab-id"));
+      event.dataTransfer.setData("text", event.target.getAttribute("data-uuid"));
     });
     j.addEventListener("dragover", (event) => {
       event.preventDefault();
@@ -106,7 +114,7 @@ var Browser = {
     });
     j.addEventListener("dragend", (event) => {
       j.style.opacity = null;
-      document.querySelectorAll(`button.tab[tab-id]`).forEach((element) => {
+      document.querySelectorAll(`button.tab[data-uuid]`).forEach((element) => {
         if(!element.classList.contains("selected")) {
           element.classList.remove("drag");
         }
@@ -114,7 +122,7 @@ var Browser = {
     });
     j.addEventListener("drop", (event) => {
       event.preventDefault();
-      var data = document.querySelector(`button.tab[tab-id="${event.dataTransfer.getData("text")}"]`);
+      var data = document.querySelector(`button.tab[data-uuid="${event.dataTransfer.getData("text")}"]`);
       localStorage.setItem("lastTabOrder", j.style.order);
       j.style.order = data.style.order;
       data.style.order = localStorage.getItem("lastTabOrder");
@@ -133,15 +141,15 @@ var Browser = {
       j.remove();
       l1.remove();
       if(j.previousElementSibling) {
-        Browser.focus(j.previousElementSibling.getAttribute("tab-id"));
+        Browser.focus(j.previousElementSibling.getAttribute("data-uuid"));
       } else {
         if(j.nextElementSibling) {
-          Browser.focus(j.nextElementSibling.getAttribute("tab-id")).click();
+          Browser.focus(j.nextElementSibling.getAttribute("data-uuid")).click();
         } else {
-          Browser.focus(document.querySelectorAll("button.tab[tab-id]")[0].getAttribute("tab-id"));
+          Browser.focus(document.querySelectorAll("button.tab[data-uuid]")[0].getAttribute("data-uuid"));
         }
       }
-      if(document.querySelectorAll("button.tab[tab-id]").length <= 1) {
+      if(document.querySelectorAll("button.tab[data-uuid]").length <= 0) {
         window.close();
       }
     });
@@ -163,13 +171,14 @@ var Browser = {
     var l1 = document.createElement("webview");
     l1.classList.add("tab-webview");
     l1.src = href;
-    l1.setAttribute("tab-id", j.getAttribute("tab-id"));
+    l1.setAttribute("data-uuid", j.getAttribute("data-uuid"));
     l1.addEventListener("did-start-loading", (event) => {
       k.src = "images/loading.png";
       document.getElementById("reload").classList.add("stop");
     });
     l1.addEventListener("did-fail-load", (event) => {
-      l1.src = "net_error.html";
+      l1.src = "about:blank";
+      document.getElementById("net-error").style.display = "block";
     });
     l1.addEventListener("did-stop-loading", (event) => {
       document.getElementById("reload").classList.remove("stop");
@@ -185,6 +194,8 @@ var Browser = {
       }
       if(l1.getURL() == `file://${__dirname}/net_error.html`) {
         document.getElementById("urlbar").style.color = "#c04040";
+      } else if(l1.getURL() == `file://${__dirname}/pages/home.html`
+        || l1.getURL() == `file://${__dirname}/pages/settings.html`) {
       } else {
         document.getElementById("urlbar").style.color = null;
         document.getElementById("urlbar").value = l1.getURL();
@@ -223,7 +234,7 @@ var Browser = {
         document.getElementById("urlbar").style.color = null;
         document.getElementById("urlbar").value = l1.getURL();
       }
-      if(!process.platform == "linux" || process.platform == "darwin") {
+      if(process.platform == "linux" || process.platform == "darwin") {
         l1.insertCSS(`
           :focus-visible {
             outline: 1px dotted #00c0ff;
@@ -254,56 +265,115 @@ var Browser = {
           }
         `);
       } else {
-        l1.insertCSS(`
-          :focus-visible {
-            outline: 1px solid #00c0ff;
-          }
-          ::-webkit-scrollbar {
-            background-color: rgba(0, 0, 0, 0.125);
-            display: block;
-            width: 16px;
-            height: 16px;
-          }
-          ::-webkit-scrollbar-button:single-button {
-            background: rgba(0, 0, 0, 0) center no-repeat;
-            background-size: 16px;
-            border-radius: 0;
-            display: block;
-            image-rendering: pixelated;
-            height: 16px;
-            width: 16px;
-          }
-          ::-webkit-scrollbar-button:single-button:hover {
-            background-color: rgba(0, 0, 0, 0.125);
-          }
-          ::-webkit-scrollbar-button:single-button:active {
-            background-color: rgba(0, 0, 0, 0.25);
-          }
-          ::-webkit-scrollbar-button:single-button:decrement {
-            background-image: url("https://img.icons8.com/fluency-systems-regular/16/000000/collapse-arrow--v2.png");
-          }
-          ::-webkit-scrollbar-button:single-button:increment {
-            background-image: url("https://img.icons8.com/fluency-systems-regular/16/000000/expand-arrow--v1.png");
-          }
-          ::-webkit-scrollbar-corner {
-            background-color: rgba(0, 0, 0, 0.125);
-          }
-          ::-webkit-scrollbar-thumb {
-            background-clip: content-box;
-            background-color: rgba(0, 0, 0, 0.25);
-            border: none;
-            border-radius: 0;
-          }
-          ::-webkit-scrollbar-thumb:hover {
-            background-color: rgba(0, 0, 0, 0.5);
-          }
-          ::-webkit-scrollbar-thumb:active {
-            background-color: rgba(0, 0, 0, 0.75);
-          }
-          ::-webkit-scrollbar-track {
-            background-color: transparent;
-          }
-        `);
+        if(window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          l1.insertCSS(`
+            :focus-visible {
+              outline: 1px solid #00c0ff;
+            }
+            ::-webkit-scrollbar {
+              background-color: rgba(0, 0, 0, 0.125);
+              display: block;
+              width: 16px;
+              height: 16px;
+            }
+            ::-webkit-scrollbar-button:single-button {
+              background: rgba(0, 0, 0, 0) center no-repeat;
+              background-size: 12px;
+              border-radius: 0;
+              display: block;
+              image-rendering: pixelated;
+              height: 16px;
+              width: 16px;
+            }
+            ::-webkit-scrollbar-button:single-button:hover {
+              background-color: rgba(255, 255, 255, 0.125);
+            }
+            ::-webkit-scrollbar-button:single-button:active {
+              background-color: rgba(255, 255, 255, 0.25);
+            }
+            ::-webkit-scrollbar-button:single-button:decrement {
+              background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iOTYiIGhlaWdodD0iOTYiCnZpZXdCb3g9IjAgMCAxNzIgMTcyIgpzdHlsZT0iIGZpbGw6IzAwMDAwMDsiPjxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJub25lIiBmb250LXdlaWdodD0ibm9uZSIgZm9udC1zaXplPSJub25lIiB0ZXh0LWFuY2hvcj0ibm9uZSIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0wLDE3MnYtMTcyaDE3MnYxNzJ6IiBmaWxsPSJub25lIj48L3BhdGg+PGcgZmlsbD0iI2ZmZmZmZiI+PHBhdGggZD0iTTg1LjkyMzAyLDQxLjIwODMzYy0xLjM5ODcyLDAuMDIwNDUgLTIuNzM0MzcsMC41ODUzNCAtMy43MjMzMSwxLjU3NDcxbC02OS44NzUsNjkuODc1Yy0xLjQwNDEyLDEuMzQ4MTUgLTEuOTY5NzIsMy4zNTAwNSAtMS40Nzg2Nyw1LjIzMzY0YzAuNDkxMDUsMS44ODM2IDEuOTYyMDIsMy4zNTQ1NyAzLjg0NTYxLDMuODQ1NjJjMS44ODM2LDAuNDkxMDUgMy44ODU0OSwtMC4wNzQ1NSA1LjIzMzY0LC0xLjQ3ODY3bDY2LjA3NDcxLC02Ni4wNzQ3MWw2Ni4wNzQ3MSw2Ni4wNzQ3MWMxLjM0ODE1LDEuNDA0MTIgMy4zNTAwNSwxLjk2OTcxIDUuMjMzNjQsMS40Nzg2NmMxLjg4MzU5LC0wLjQ5MTA1IDMuMzU0NTYsLTEuOTYyMDIgMy44NDU2MSwtMy44NDU2MWMwLjQ5MTA1LC0xLjg4MzU5IC0wLjA3NDU1LC0zLjg4NTQ5IC0xLjQ3ODY2LC01LjIzMzY0bC02OS44NzUsLTY5Ljg3NWMtMS4wMjY2NiwtMS4wMjcwOCAtMi40MjUyLC0xLjU5NTA4IC0zLjg3NzI4LC0xLjU3NDcxeiI+PC9wYXRoPjwvZz48L2c+PC9zdmc+Cg==");
+            }
+            ::-webkit-scrollbar-button:single-button:increment {
+              background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iOTYiIGhlaWdodD0iOTYiCnZpZXdCb3g9IjAgMCAxNzIgMTcyIgpzdHlsZT0iIGZpbGw6I2ZmZmZmZjsiPjxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJub25lIiBmb250LXdlaWdodD0ibm9uZSIgZm9udC1zaXplPSJub25lIiB0ZXh0LWFuY2hvcj0ibm9uZSIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0wLDE3MnYtMTcyaDE3MnYxNzJ6IiBmaWxsPSJub25lIj48L3BhdGg+PGcgZmlsbD0iI2ZmZmZmZiI+PHBhdGggZD0iTTE1NS44MjYwMSw0Mi45MjMwMmMtMS40MTk1LDAuMDMzNTIgLTIuNzY4MDgsMC42MjczIC0zLjc1MTMsMS42NTE2OWwtNjYuMDc0NzEsNjYuMDc0NzFsLTY2LjA3NDcxLC02Ni4wNzQ3MWMtMS4wMTIyMiwtMS4wNDI0IC0yLjQwMzMsLTEuNjMwNjQgLTMuODU2MjgsLTEuNjMwN2MtMi4xODgxNCwwLjAwMDUzIC00LjE1NzYsMS4zMjczNSAtNC45ODAwNiwzLjM1NTA0Yy0wLjgyMjQ1LDIuMDI3NjkgLTAuMzMzNzUsNC4zNTE1NiAxLjIzNTc1LDUuODc2MjRsNjkuODc1LDY5Ljg3NWMyLjA5OTEsMi4wOTgyMyA1LjUwMTQ5LDIuMDk4MjMgNy42MDA1OSwwbDY5Ljg3NSwtNjkuODc1YzEuNTk5ODEsLTEuNTM1NDkgMi4wOTI1OSwtMy44OTU3NSAxLjI0MDgzLC01Ljk0MzA5Yy0wLjg1MTc3LC0yLjA0NzM0IC0yLjg3MzI4LC0zLjM2MTU2IC01LjA5MDExLC0zLjMwOTE5eiI+PC9wYXRoPjwvZz48L2c+PC9zdmc+Cg==");
+            }
+            ::-webkit-scrollbar-button:single-button:horizontal {
+              transform: rotate(-90deg);
+            }
+            ::-webkit-scrollbar-corner {
+              background-color: rgba(0, 0, 0, 0.125);
+            }
+            ::-webkit-scrollbar-thumb {
+              background-clip: content-box;
+              background-color: #808080;
+              border: none;
+              border-radius: 0;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+              background-color: #707070;
+            }
+            ::-webkit-scrollbar-thumb:active {
+              background-color: #606060;
+            }
+            ::-webkit-scrollbar-track {
+              background-color: transparent;
+            }
+          `);
+        } else {
+          l1.insertCSS(`
+            :focus-visible {
+              outline: 1px solid #00c0ff;
+            }
+            ::-webkit-scrollbar {
+              background-color: rgba(0, 0, 0, 0.125);
+              display: block;
+              width: 16px;
+              height: 16px;
+            }
+            ::-webkit-scrollbar-button:single-button {
+              background: rgba(0, 0, 0, 0) center no-repeat;
+              background-size: 16px;
+              border-radius: 0;
+              display: block;
+              image-rendering: pixelated;
+              height: 16px;
+              width: 16px;
+            }
+            ::-webkit-scrollbar-button:single-button:hover {
+              background-color: rgba(0, 0, 0, 0.125);
+            }
+            ::-webkit-scrollbar-button:single-button:active {
+              background-color: rgba(0, 0, 0, 0.25);
+            }
+            ::-webkit-scrollbar-button:single-button:decrement {
+              background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iOTYiIGhlaWdodD0iOTYiCnZpZXdCb3g9IjAgMCA0OCA0OCIKc3R5bGU9IiBmaWxsOiMwMDAwMDA7Ij48cGF0aCBkPSJNIDIzLjk3ODUxNiAxMS41IEEgMS41MDAxNSAxLjUwMDE1IDAgMCAwIDIyLjkzOTQ1MyAxMS45Mzk0NTMgTCAzLjQzOTQ1MzEgMzEuNDM5NDUzIEEgMS41MDAxNSAxLjUwMDE1IDAgMSAwIDUuNTYwNTQ2OSAzMy41NjA1NDcgTCAyNCAxNS4xMjEwOTQgTCA0Mi40Mzk0NTMgMzMuNTYwNTQ3IEEgMS41MDAxNSAxLjUwMDE1IDAgMSAwIDQ0LjU2MDU0NyAzMS40Mzk0NTMgTCAyNS4wNjA1NDcgMTEuOTM5NDUzIEEgMS41MDAxNSAxLjUwMDE1IDAgMCAwIDIzLjk3ODUxNiAxMS41IHoiPjwvcGF0aD48L3N2Zz4K");
+            }
+            ::-webkit-scrollbar-button:single-button:increment {
+              background-image: url("PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHg9IjBweCIgeT0iMHB4Igp3aWR0aD0iOTYiIGhlaWdodD0iOTYiCnZpZXdCb3g9IjAgMCAxNzIgMTcyIgpzdHlsZT0iIGZpbGw6IzAwMDAwMDsiPjxnIGZpbGw9Im5vbmUiIGZpbGwtcnVsZT0ibm9uemVybyIgc3Ryb2tlPSJub25lIiBzdHJva2Utd2lkdGg9IjEiIHN0cm9rZS1saW5lY2FwPSJidXR0IiBzdHJva2UtbGluZWpvaW49Im1pdGVyIiBzdHJva2UtbWl0ZXJsaW1pdD0iMTAiIHN0cm9rZS1kYXNoYXJyYXk9IiIgc3Ryb2tlLWRhc2hvZmZzZXQ9IjAiIGZvbnQtZmFtaWx5PSJub25lIiBmb250LXdlaWdodD0ibm9uZSIgZm9udC1zaXplPSJub25lIiB0ZXh0LWFuY2hvcj0ibm9uZSIgc3R5bGU9Im1peC1ibGVuZC1tb2RlOiBub3JtYWwiPjxwYXRoIGQ9Ik0wLDE3MnYtMTcyaDE3MnYxNzJ6IiBmaWxsPSJub25lIj48L3BhdGg+PGcgZmlsbD0iIzAwMDAwMCI+PHBhdGggZD0iTTE1NS44MjYwMSw0Mi45MjMwMmMtMS40MTk1LDAuMDMzNTIgLTIuNzY4MDgsMC42MjczIC0zLjc1MTMsMS42NTE2OWwtNjYuMDc0NzEsNjYuMDc0NzFsLTY2LjA3NDcxLC02Ni4wNzQ3MWMtMS4wMTIyMiwtMS4wNDI0IC0yLjQwMzMsLTEuNjMwNjQgLTMuODU2MjgsLTEuNjMwN2MtMi4xODgxNCwwLjAwMDUzIC00LjE1NzYsMS4zMjczNSAtNC45ODAwNiwzLjM1NTA0Yy0wLjgyMjQ1LDIuMDI3NjkgLTAuMzMzNzUsNC4zNTE1NiAxLjIzNTc1LDUuODc2MjRsNjkuODc1LDY5Ljg3NWMyLjA5OTEsMi4wOTgyMyA1LjUwMTQ5LDIuMDk4MjMgNy42MDA1OSwwbDY5Ljg3NSwtNjkuODc1YzEuNTk5ODEsLTEuNTM1NDkgMi4wOTI1OSwtMy44OTU3NSAxLjI0MDgzLC01Ljk0MzA5Yy0wLjg1MTc3LC0yLjA0NzM0IC0yLjg3MzI4LC0zLjM2MTU2IC01LjA5MDExLC0zLjMwOTE5eiI+PC9wYXRoPjwvZz48L2c+PC9zdmc+Cg==");
+            }
+            ::-webkit-scrollbar-button:single-button:horizontal {
+              transform: rotate(-90deg);
+            }
+            ::-webkit-scrollbar-corner {
+              background-color: rgba(255, 255, 255, 0.125);
+            }
+            ::-webkit-scrollbar-thumb {
+              background-clip: content-box;
+              background-color: #808080;
+              border: none;
+              border-radius: 0;
+            }
+            ::-webkit-scrollbar-thumb:hover {
+              background-color: #707070;
+            }
+            ::-webkit-scrollbar-thumb:active {
+              background-color: #606060;
+            }
+            ::-webkit-scrollbar-track {
+              background-color: transparent;
+            }
+          `);
+        }
       }
       l1.insertCSS(`
         h1 {
@@ -331,6 +401,13 @@ var Browser = {
           font-size: ${parseInt(fontSize * 0.5)}px;
         }
       `);
+      if(l1.getURL() == "about:home") {
+        document.getElementById("home-page").style.display = "block";
+        document.getElementById("net-error").style.display = "none";
+      } else if(l1.getURL() == "about:error") {
+        document.getElementById("home-page").style.display = "none";
+        document.getElementById("net-error").style.display = "block";
+      }
     });
     l1.addEventListener("page-favicon-updated", (event) => {
       k.src = event.favicons[0];
@@ -469,7 +546,7 @@ var Browser = {
     k1.appendChild(l1);
     if(selected) {
       setTimeout(() => {
-        Browser.focus(j.getAttribute("tab-id"));
+        Browser.focus(j.getAttribute("data-uuid"));
       }, 10);
     }
     var j2 = document.createElement("div");
@@ -514,19 +591,19 @@ var Browser = {
     i.appendChild(j);
     document.getElementById("back").addEventListener("pointerup", (event) => {
       event.preventDefault();
-      if(selectedTab == j.getAttribute("tab-id")) {
+      if(selectedTab == j.getAttribute("data-uuid")) {
         l1.goBack();
       }
     });
     document.getElementById("forward").addEventListener("pointerup", (event) => {
       event.preventDefault();
-      if(selectedTab == j.getAttribute("tab-id")) {
+      if(selectedTab == j.getAttribute("data-uuid")) {
         l1.goForward();
       }
     });
     document.getElementById("reload").addEventListener("pointerup", (event) => {
       event.preventDefault();
-      if(selectedTab == j.getAttribute("tab-id")) {
+      if(selectedTab == j.getAttribute("data-uuid")) {
         if(l1.isLoading()) {
           l1.stop();
         } else {
@@ -535,14 +612,14 @@ var Browser = {
       }
     });
     document.getElementById("home").addEventListener("pointerup", (event) => {
-      if(selectedTab == j.getAttribute("tab-id")) {
+      if(selectedTab == j.getAttribute("data-uuid")) {
         l1.src = homeURL;
       }
     });
     document.getElementById("urlbar").addEventListener("keydown", (event) => {
       if(event.keyCode == 13) {
         event.target.blur();
-        if(selectedTab == j.getAttribute("tab-id")) {
+        if(selectedTab == j.getAttribute("data-uuid")) {
           if(event.target.value.startsWith("file://")
             || event.target.value.startsWith("http://")
             || event.target.value.startsWith("https://")) {
@@ -555,11 +632,19 @@ var Browser = {
             }
           } else {
             if(event.target.value.includes(".")
-            && !event.target.value.startsWith("/")
-            && !event.target.value.startsWith("file://")
-            && !event.target.value.startsWith("http://")
-            && !event.target.value.startsWith("https://")) {
+              && !event.target.value.startsWith("/")
+              && !event.target.value.startsWith("file://")
+              && !event.target.value.startsWith("http://")
+              && !event.target.value.startsWith("https://")
+              && !event.target.value.startsWith("about:")
+              && !event.target.value.startsWith("browser:")) {
               l1.src = `https://${event.target.value}`;
+            } else if(event.target.value.startsWith("browser:")) {
+              if(process.platform == "win32") {
+                l1.src = `file://C:${__dirname}/pages/${event.target.value.substring(8)}.html`;
+              } else {
+                l1.src = `file://${__dirname}/pages/${event.target.value.substring(8)}.html`;
+              }
             } else {
               l1.src = `https://www.google.com/search?q=${event.target.value}`;
             }
@@ -587,9 +672,9 @@ var Browser = {
     });
   },
   focus: (uuid) => {
-    var i = document.querySelector(`button.tab[tab-id="${uuid}"]`);
-    var j = document.querySelector(`webview.tab-webview[tab-id="${uuid}"]`);
-    var deselect = document.querySelectorAll("button.tab[tab-id], webview.tab-webview[tab-id]");
+    var i = document.querySelector(`button.tab[data-uuid="${uuid}"]`);
+    var j = document.querySelector(`webview.tab-webview[data-uuid="${uuid}"]`);
+    var deselect = document.querySelectorAll("button.tab[data-uuid], webview.tab-webview[data-uuid]");
     deselect.forEach((element) => {
       element.classList.remove("selected");
     });
@@ -608,6 +693,9 @@ var Browser = {
     }
     if(j.getURL() == `file://${__dirname}/net_error.html`) {
       document.getElementById("urlbar").style.color = "#ff4040";
+    } else if(j.getURL() == `file://${__dirname}/pages/home.html`
+      || j.getURL() == `file://${__dirname}/pages/settings.html`) {
+      return;
     } else {
       document.getElementById("urlbar").style.color = null;
       document.getElementById("urlbar").value = j.getURL();
