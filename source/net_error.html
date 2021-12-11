@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="defaultLanguage" content="en-US">
+    <meta name="availableLanguages" content="ar-SA, en-US">
+    <title data-l10n-id="net-error"></title>
+    <link rel="icon" type="image/png" href="images/exclamation_16.png">
+    <link rel="localization" href="locales/{locale}.ftl">
+    <link rel="localization" href="locales/net_error.{locale}.ftl">
+    <link rel="stylesheet" type="text/css" href="style/layout.css">
+    <link rel="stylesheet" type="text/css" href="style/net_error/net_error.css">
+    <script defer="" type="text/javascript" src="js/l20n.js"></script>
+    <script defer="" type="text/javascript" src="js/net_error/net_error.js"></script>
+  </head>
+  <body role="application">
+    <div id="net-error">
+      <div class="net-error-maximized">
+        <div class="net-error-container">
+          <img src="style/net_error/images/fail_icon.png" alt="" class="image">
+          <div class="context">
+            <h1 data-l10n-id="net-error-title"></h1>
+            <p data-l10n-id="net-error-summary"></p>
+            <ul>
+              <li data-l10n-id="net-error-tip0"></li>
+              <li data-l10n-id="net-error-tip1"></li>
+              <li data-l10n-id="net-error-tip2"></li>
+            </ul>
+            <button id="reload" data-l10n-id="reload"></button>
+            <button id="more-info" data-l10n-id="moreInfo"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

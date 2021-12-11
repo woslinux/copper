@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="defaultLanguage" content="en-US">
+    <meta name="availableLanguages" content="ar-SA, en-US">
+    <title data-l10n-id="newTab"></title>
+    <link rel="icon" type="image/png" href="../images/exclamation_16.png">
+    <link rel="localization" href="../locales/{locale}.ftl">
+    <link rel="localization" href="../locales/home.{locale}.ftl">
+    <link rel="stylesheet" type="text/css" href="../style/layout.css">
+    <link rel="stylesheet" type="text/css" href="home.css">
+    <script defer="" type="text/javascript" src="../js/l20n.js"></script>
+    <script defer="" type="text/javascript" src="home.js"></script>
+  </head>
+  <body role="application">
+    <div class="weather" style="display: none;">
+      <div id="ww_4a776807" v="1.20" loc="id" a='{"t":"horizontal","lang":"en","ids":[],"cl_bkg":"image","cl_font":"#FFFFFF","cl_cloud":"#FFFFFF","cl_persp":"#81D4FA","cl_sun":"#FFC107","cl_moon":"#FFC107","cl_thund":"#FF5722","sl_sot":"fahrenheit","sl_ics":"one_a","font":"Arial"}'><a href="https://weatherwidget.org/" id="ww_4a776807_u" target="_blank">Weather widget for website by Weatherwidget.org</a></div><script async src="https://srv1.weatherwidget.org/js/?id=ww_4a776807"></script>
+    </div>
+    <div id="main">
+      <div id="initlogo">
+        <img src="../../assets/favicon.png" alt="" class="initlogo-icon">
+        <p class="initlogo-text">Aluminum Browser</p>
+      </div>
+      <input type="text" placeholder="Type here to search..." id="searchbox">
+      <div id="bookmarks"></div>
+      <div id="recents">
+        <header>Recent Websites</header>
+        <div id="recents-holder"></div>
+      </div>
+    </div>
+  </body>
+</html>

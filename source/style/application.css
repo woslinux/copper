@@ -1,0 +1,306 @@
+:root {
+  --dir-icon: rotateY(0deg);
+}
+[dir="rtl"] {
+  --dir-icon: rotateY(180deg);
+}
+:focus-visible {
+  outline: 1px dotted var(--text-color);
+}
+* {
+  user-select: none;
+  z-index: auto;
+}
+body {
+  background-color: transparent;
+}
+img {
+  pointer-events: none;
+}
+#navbar-addons,
+#navbar-back,
+#navbar-downloads,
+#navbar-addBookmark,
+#navbar-findText,
+#navbar-forward,
+#navbar-home,
+#navbar-library,
+#tabsToolbar-newTab,
+#navbar-options,
+#navbar-reload,
+#navbar-security,
+#tabsToolbar-sideTabs {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+#navbar-addons:before,
+#navbar-back:before,
+#navbar-downloads:before,
+#navbar-addBookmark:before,
+#navbar-findText:before,
+#navbar-forward:before,
+#navbar-home:before,
+#navbar-library:before,
+#tabsToolbar-newTab:before,
+#navbar-options:before,
+#navbar-reload:before,
+#navbar-security:before,
+#tabsToolbar-sideTabs:before,
+.action-holder > button:before {
+  aspect-ratio: 1 / 1;
+  background: transparent center no-repeat;
+  background-size: 24px;
+  content: "";
+  display: block;
+  filter: var(--icon-filter);
+  transform: var(--dir-icon);
+  width: 24px;
+}
+#main-window {
+  background-color: var(--background-medium);
+  border: 2px solid transparent;
+  border-color: var(--polish-top) var(--polish-sides) var(--polish-bottom);
+  border-radius: 8px;
+  box-sizing: border-box;
+  overflow: hidden;
+  padding: 4px;
+  transition: filter 250ms linear;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
+}
+#main-window.darwin {
+  border-radius: 12px;
+}
+#main-window.fullscreen {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+#main-window.gpu-capable:before {
+  backdrop-filter: blur(16px);
+  background-color: var(--acrylic-bold);
+  content: "";
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+#main-window.maximized {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+#main-window.sidetabs:not(.fullscreen) {
+  background-color: var(--background-light);
+}
+#main-window:not(.linux) #mainWindow-close:hover {
+  background-color: #e00020;
+}
+#main-window:not(.linux) #mainWindow-close:active {
+  background-color: #ffa0c0;
+}
+#mainWindow-close:active:before {
+  filter: invert(1);
+}
+#mainWindow-close:before {
+  background-image: url("../images/close_16.png");
+  background-size: 16px;
+}
+#dialog-overlays {
+  perspective: 256px;
+  pointer-events: none;
+  z-index: 4;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+#mainWindow-maximize:before {
+  background-image: url("../images/maximize.png");
+  background-size: 16px;
+}
+#mainWindow-minimize:before {
+  background-image: url("../images/minimize.png");
+  background-size: 16px;
+}
+#urlbar-results {
+  background-color: var(--background-medium);
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 16px 32px 0 var(--shadow-color);
+  visibility: hidden;
+  position: absolute;
+  left: 180px;
+  top: 80px;
+  width: calc(100% - 360px);
+  height: calc(100% - 360px);
+}
+.action-holder {
+  z-index: 1;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 200px;
+  height: 40px;
+  -webkit-app-region: drag;
+}
+.action-holder > button {
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  display: flex;
+  float: var(--float-end);
+  justify-content: center;
+  width: 44px;
+  height: 100%;
+  -webkit-app-region: none;
+}
+.action-holder > button:hover {
+  background-color: var(--hover-normal);
+}
+.action-holder > button:active {
+  background-color: var(--hover-active);
+}
+.darwin #mainWindow-close {
+  background-color: #fc5753;
+}
+.darwin #mainWindow-close,
+.darwin #mainWindow-maximize,
+.darwin #mainWindow-minimize {
+  border-radius: 2rem;
+  float: var(--float-start);
+  margin: 12px 4px;
+  width: 16px;
+  height: 16px;
+}
+.darwin #mainWindow-close:hover,
+.darwin #mainWindow-maximize:hover,
+.darwin #mainWindow-minimize:hover {
+  filter: brightness(75%);
+}
+.darwin #mainWindow-close:active,
+.darwin #mainWindow-maximize:active,
+.darwin #mainWindow-minimize:active {
+  filter: brightness(50%);
+}
+.darwin #mainWindow-close:before,
+.darwin #mainWindow-maximize:before,
+.darwin #mainWindow-minimize:before {
+  display: none;
+}
+.darwin #mainWindow-maximize {
+  background-color: #fdbc40;
+}
+.darwin #mainWindow-minimize {
+  background-color: #33c748;
+}
+.darwin .action-holder,
+.linux .action-holder {
+  box-sizing: border-box;
+  margin: 2px;
+  padding: 0 8px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 90px;
+}
+.darwin.sidetabs:not(.fullscreen) #mainWindow-close,
+.darwin.sidetabs:not(.fullscreen) #mainWindow-maximize,
+.darwin.sidetabs:not(.fullscreen) #mainWindow-minimize {
+  margin: 8px 4px;
+}
+.darwin.sidetabs:not(.fullscreen) .action-holder {
+  padding: 0 4px;
+  width: calc(100% - 4px);
+  height: 32px;
+}
+.fullscreen .responsive {
+  background-color: var(--background-medium);
+  transform: translateY(-79px);
+  transition: 250ms var(--cubic-bezier);
+  z-index: 4;
+  position: relative;
+  left: 0;
+  top: 0;
+}
+.fullscreen .responsive:hover,
+.fullscreen .responsive:focus-within {
+  transform: translateY(0);
+}
+.linux #mainWindow-close:before {
+  background-image: var(--icon-gtk-close);
+}
+.linux #mainWindow-close:hover:before {
+  background-image: var(--icon-gtk-close-hover, var(--icon-gtk-close));
+}
+.linux #mainWindow-close:active:before {
+  background-image: var(--icon-gtk-close-active, var(--icon-gtk-close));
+}
+.linux #mainWindow-close:before,
+.linux #mainWindow-maximize:before,
+.linux #mainWindow-minimize:before {
+  background-size: auto;
+}
+.linux.maximized #mainWindow-maximize:before {
+  background-image: var(--icon-gtk-restore);
+}
+.linux.maximized #mainWindow-maximize:hover:before {
+  background-image: var(--icon-gtk-restore-hover, var(--icon-gtk-restore));
+}
+.linux.maximized #mainWindow-maximize:active:before {
+  background-image: var(--icon-gtk-restore-active, var(--icon-gtk-restore));
+}
+.linux #mainWindow-maximize:before {
+  background-image: var(--icon-gtk-maximize);
+}
+.linux #mainWindow-maximize:hover:before {
+  background-image: var(--icon-gtk-maximize-hover, var(--icon-gtk-maximize));
+}
+.linux #mainWindow-maximize:active:before {
+  background-image: var(--icon-gtk-maximize-active, var(--icon-gtk-maximize));
+}
+.linux #mainWindow-minimize:before {
+  background-image: var(--icon-gtk-minimize);
+}
+.linux #mainWindow-minimize:hover:before {
+  background-image: var(--icon-gtk-minimize-hover, var(--icon-gtk-minimize));
+}
+.linux #mainWindow-minimize:active:before {
+  background-image: var(--icon-gtk-minimize-active, var(--icon-gtk-minimize));
+}
+.linux .action-holder {
+  padding: 0 4px;
+  width: 200px;
+}
+.linux .action-holder > button {
+  background-color: transparent;
+  border-radius: 2rem;
+  margin: 4px 0;
+  width: 32px;
+  height: 32px;
+}
+.maximized.darwin .action-holder,
+.maximized.linux .action-holder {
+  margin: 0;
+}
+.maximized:not(.linux) .action-holder #mainWindow-maximize:before {
+  background-image: url("../images/restore.png");
+}
+.unfocused .action-holder > button:before,
+.unfocused .tab .tab-title {
+  opacity: 0.5;
+}
+[dir="rtl"] .action-holder {
+  left: 0;
+  right: auto;
+}
+[dir="rtl"] .darwin .action-holder {
+  left: auto;
+  right: 0;
+}

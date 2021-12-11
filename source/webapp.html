@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="manifest" href="manifest.json">
+    <meta name="defaultLanguage" content="en-US">
+    <meta name="availableLanguages" content="ar-SA, en-US">
+    <link rel="localization" href="locales/{locale}.ftl">
+    <link rel="stylesheet" type="text/css" href="style/layout.css">
+    <link rel="stylesheet" type="text/css" href="style/application.css">
+    <link rel="stylesheet" type="text/css" href="style/dialog_overlays.css">
+    <link rel="stylesheet" type="text/css" href="style/context_menu.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="js/application.js"></script>
+    <script defer type="text/javascript" src="js/l20n.js"></script>
+    <script defer type="text/javascript" src="js/dialog_overlays.js"></script>
+    <script defer type="text/javascript" src="js/context_menu.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+  </head>
+  <body>
+    <div id="main-window">
+      <section class="responsive">
+        <span class="action-holder">
+          <button id="mainWindow-close"></button>
+          <button id="mainWindow-maximize"></button>
+          <button id="mainWindow-minimize"></button>
+        </span>
+      </section>
+      <div id="context-menu"></div>
+      <div id="dialog-overlays">
+        <div id="dialog-alert">
+          <p id="dialog-alert-text"></p>
+          <button id="dialog-alert-ok" data-l10n-id="ok"></button>
+        </div>
+        <div id="dialog-confirm">
+          <header id="dialog-confirm-title"></header>
+          <p id="dialog-confirm-detail"></p>
+          <button id="dialog-confirm-ok" data-l10n-id="ok"></button>
+          <button id="dialog-confirm-cancel" data-l10n-id="cancel"></button>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="js/window.js"></script>
+  </body>
+</html>

@@ -1,5 +1,6 @@
 "use strict";
 const { app, autoUpdater, BrowserWindow, ipcMain, protocol } = require("electron");
+const fs = require("fs");
 const path = require("path");
 require("update-electron-app")();
 // const server = "https://wos-org.github.io/deployment";
@@ -36,16 +37,23 @@ function createWindow() {
       devTools: true,
       nodeIntegration: true,
       nodeIntegrationInWorker: true,
-      preload: path.join(__dirname, "src/preload.js"),
+      preload: path.join(__dirname, "preload.js"),
       defaultEncoding: "UTF-8",
       contextIsolation: false,
-      webviewTag: true,
+      webviewTag: true
     },
     transparent: true
   });
   mainWindow.setMenu(null);
-  mainWindow.webContents.loadFile("src/index.html");
+  mainWindow.webContents.loadFile("source/index.html");
   mainWindow.openDevTools();
+  mainWindow.on("blur", () => {
+    mainWindow.webContents.send("blur");
+  });
+  mainWindow.on("focus", () => {
+    mainWindow.webContents.send("focus");
+  });
+
   for(let index = 0; index < process.argv.length; index++) {
     if(process.argv[index].startsWith("file://")
       || process.argv[index].startsWith("http://")
@@ -58,6 +66,7 @@ function createWindow() {
       );
     }
   }
+
   ipcMain.handle("maximize", async (event) => {
     if(BrowserWindow.getFocusedWindow().isMaximized()) {
       BrowserWindow.getFocusedWindow().unmaximize();
@@ -65,60 +74,62 @@ function createWindow() {
       BrowserWindow.getFocusedWindow().maximize();
     }
   });
+
   ipcMain.handle("minimize", async (event) => {
     BrowserWindow.getFocusedWindow().minimize();
   });
-  ipcMain.handle("addons", async (event) => {
-    const webIDEWindow = new BrowserWindow({
-      width: 800,
+
+  ipcMain.handle("new-window", async (event) => {
+    const mainWindow = new BrowserWindow({
+      width: 900,
       height: 600,
-      minWidth: 800,
+      minWidth: 900,
       minHeight: 600,
       frame: false,
       autoHideMenuBar: true,
-      title: "Aluminum WebIDE",
-      icon: "assets/webide.png",
+      title: "Aluminum Browser",
+      icon: "assets/favicon.png",
       webPreferences: {
         devTools: true,
         nodeIntegration: true,
         nodeIntegrationInWorker: true,
-        preload: path.join(__dirname, "src/preload.js"),
+        preload: path.join(__dirname, "preload.js"),
         defaultEncoding: "UTF-8",
         contextIsolation: false,
-        webviewTag: true,
+        webviewTag: true
       },
       transparent: true
     });
-    webIDEWindow.loadFile("webide/index.html");
-    webIDEWindow.on("blur", () => {
-      webIDEWindow.webContents.send("blur");
+    mainWindow.setMenu(null);
+    mainWindow.webContents.loadFile("source/index.html");
+    mainWindow.openDevTools();
+    mainWindow.on("blur", () => {
+      mainWindow.webContents.send("blur");
     });
-    webIDEWindow.on("focus", () => {
-      webIDEWindow.webContents.send("focus");
+    mainWindow.on("focus", () => {
+      mainWindow.webContents.send("focus");
     });
-  });
-  mainWindow.on("blur", () => {
-    mainWindow.webContents.send("blur");
-  });
-  mainWindow.on("focus", () => {
-    mainWindow.webContents.send("focus");
   });
 }
+
 app.whenReady().then(() => {
   createWindow();
   app.on("activate", function() {
     if(BrowserWindow.getAllWindows().length === 0) createWindow();
   });
-  protocol.registerFileProtocol("browser", (request, callback) => {
-    const url = request.url.substr(7);
+
+  protocol.registerFileProtocol("wos-browser", (request, callback) => {
+    const url = request.url.substr(11);
     callback({
-      path: path.normalize(`${__dirname}/src/pages/${url}`)
+      path: path.normalize(__dirname)
     });
   });
 });
+
 app.on("window-all-closed", function() {
   if(process.platform !== "darwin") app.quit();
 });
+
 // autoUpdater.on("update-downloaded", (event, releaseNotes, releaseName) => {
 //   const dialogOpts = {
 //     type: "info",

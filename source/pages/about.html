@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="defaultLanguage" content="en-US">
+    <meta name="availableLanguages" content="ar-SA, en-US">
+    <title data-l10n-id="newTab"></title>
+    <link rel="icon" type="image/png" href="../images/exclamation_16.png">
+    <link rel="localization" href="../locales/{locale}.ftl">
+    <link rel="localization" href="../locales/home.{locale}.ftl">
+    <link rel="stylesheet" type="text/css" href="../style/layout.css">
+    <script defer="" type="text/javascript" src="../js/l20n.js"></script>
+    <style type="text/css">
+      body {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body role="application">
+    <h1>About About</h1>
+    <ul>
+      <li><a href="#" onclick="window.top.document.querySelector(`webview.tab-webview[data-uuid='${window.top.selectedTab}']`).src='about:blank#about';">about:blank#about</a></li>
+      <li><a href="#" onclick="window.top.document.querySelector(`webview.tab-webview[data-uuid='${window.top.selectedTab}']`).src='about:blank#home';">about:blank#home</a></li>
+      <li><a href="#" onclick="window.top.document.querySelector(`webview.tab-webview[data-uuid='${window.top.selectedTab}']`).src='about:blank#settings';">about:blank#settings</a></li>
+      <li><a href="#" onclick="window.top.document.querySelector(`webview.tab-webview[data-uuid='${window.top.selectedTab}']`).src='about:blank#error';">about:blank#error</a></li>
+    </ul>
+  </body>
+</html>

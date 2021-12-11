@@ -1,0 +1,93 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+#context-menu {
+  background-color: var(--background-light);
+  border-radius: 8px;
+  box-shadow: 0 8px 16px 0 var(--shadow-color), inset 0 0 0 1px var(--hover-normal);
+  box-sizing: border-box;
+  opacity: 0;
+  overflow: auto;
+  padding: 8px;
+  transition: opacity 250ms var(--cubic-bezier), visibility 250ms var(--cubic-bezier);
+  visibility: hidden;
+  z-index: 4;
+  position: absolute;
+  right: 8px;
+  top: 80px;
+  width: 320px;
+}
+#context-menu.shown,
+#tabsToolbar-tooltip.shown {
+  opacity: 1;
+  visibility: visible;
+}
+#context-menu > * {
+  animation: fadeIn 250ms var(--cubic-bezier);
+}
+#context-menu button {
+  background-color: transparent;
+  border: none;
+  border-radius: 4px;
+  overflow: hidden;
+  padding: 9px;
+  width: -webkit-fill-available;
+  height: 36px;
+}
+#context-menu button:hover {
+  background-color: var(--hover-normal);
+}
+#context-menu button:active {
+  background-color: var(--hover-active);
+}
+#context-menu button[data-keybind]:after {
+  content: attr(data-keybind);
+  display: block;
+  float: var(--float-end);
+  opacity: 0.5;
+}
+#context-menu div {
+  overflow: auto;
+  width: -webkit-fill-available;
+}
+.cm-back {
+  background: url("../images/back.png") center no-repeat;
+  transform: var(--dir-icon);
+  width: 36px;
+  min-width: 36px;
+  max-width: 36px;
+}
+.darwin.maximized.sidetabs:not(.fullscreen) #context-menu {
+  top: 68px;
+}
+.darwin.sidetabs:not(.fullscreen) #context-menu {
+  top: 72px;
+}
+.maximized #context-menu {
+  position: absolute;
+  right: 4px;
+  top: 76px;
+}
+.maximized.sidetabs:not(.fullscreen):not(.darwin) #context-menu {
+  position: absolute;
+  right: 200px;
+  top: 36px;
+}
+.sidetabs:not(.fullscreen):not(.darwin) #context-menu {
+  position: absolute;
+  right: 204px;
+  top: 40px;
+}
+[dir="rtl"] #context-menu {
+  left: 4px;
+  right: auto;
+}
+[dir="rtl"] .sidetabs:not(.fullscreen):not(.darwin) #context-menu {
+  left: 204px;
+  right: auto;
+}

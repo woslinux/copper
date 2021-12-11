@@ -1,0 +1,122 @@
+@keyframes homeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(128px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+body[role="application"] {
+  overflow-y: auto;
+}
+#bookmarks {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(6, calc(16.7% - 7px));
+  margin: 16px 0;
+  padding: 0;
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 640px;
+}
+#initlogo {
+  margin: 16px 0;
+  pointer-events: none;
+}
+#main {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  top: 15%;
+  width: 100%;
+}
+#main > * {
+  animation: homeSlideUp 250ms var(--cubic-bezier);
+}
+#recents {
+  margin: 16px 0;
+  width: 640px;
+}
+#recents-holder {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(4, calc(25% - 6px));
+  padding: 0;
+  position: relative;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 128px;
+}
+#searchbox {
+  background-color: var(--background-lighter);
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px 0 var(--shadow-color);
+  box-sizing: border-box;
+  margin: 16px 0;
+  padding: 15px 12px;
+  width: 640px;
+  height: 48px;
+}
+#searchbox:focus {
+  outline: 2px solid var(--accent-color);
+}
+.bookmark,
+.recentCard {
+  align-items: center;
+  background-color: var(--background-lighter);
+  border-radius: 6px;
+  box-shadow: 0 4px 8px 0 var(--shadow-color);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  float: left;
+  padding: 8px 0;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  height: 112px;
+}
+.bookmark:hover,
+.bookmark:focus-visible,
+.recentCard:hover,
+.recentCard:focus-visible {
+  outline: 1px solid var(--text-color);
+  text-decoration: none;
+}
+.bookmark > img,
+.recentCard > img {
+  width: 48px;
+}
+.bookmark > p,
+.recentCard > p {
+  font-size: 14px;
+  margin-bottom: 0;
+  overflow: hidden;
+  text-align: center;
+  width: 100%;
+  max-height: 2rem;
+}
+.bookmark > span,
+.recentCard > span {
+  font-size: 12px;
+  opacity: 0.5;
+  text-align: center;
+}
+.initlogo-icon {
+  float: left;
+  width: 80px;
+} 
+.initlogo-text {
+  float: left;
+  font-family: "Ubuntu", "Segoe Ui", system-ui;
+  font-size: 36px;
+  margin: 20px 8px;
+  letter-spacing: -2px;
+}

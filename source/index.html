@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <link rel="manifest" href="manifest.json">
+    <meta name="defaultLanguage" content="en-US">
+    <meta name="availableLanguages" content="ar-SA, en-US">
+    <link rel="localization" href="locales/{locale}.ftl">
+    <link rel="stylesheet" type="text/css" href="style/layout.css">
+    <link rel="stylesheet" type="text/css" href="style/application.css">
+    <link rel="stylesheet" type="text/css" href="style/browser.css">
+    <link rel="stylesheet" type="text/css" href="style/navbar.css">
+    <link rel="stylesheet" type="text/css" href="style/dialog_overlays.css">
+    <link rel="stylesheet" type="text/css" href="style/context_menu.css">
+    <link rel="stylesheet" type="text/css" href="style/about.css">
+    <link rel="stylesheet" type="text/css" href="style/gamer_mode.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script type="text/javascript" src="js/application.js"></script>
+    <script type="text/javascript" src="js/browser.js"></script>
+    <script defer type="text/javascript" src="js/l20n.js"></script>
+    <script defer type="text/javascript" src="js/extension.js"></script>
+    <script defer type="text/javascript" src="js/dialog_overlays.js"></script>
+    <script defer type="text/javascript" src="js/context_menu.js"></script>
+    <script defer type="text/javascript" src="js/context_menu/add_bookmark.js"></script>
+    <script defer type="text/javascript" src="js/context_menu/addons.js"></script>
+    <script defer type="text/javascript" src="js/context_menu/bookmarks.js"></script>
+    <script defer type="text/javascript" src="js/context_menu/downloads.js"></script>
+    <script defer type="text/javascript" src="js/context_menu/find_text.js"></script>
+    <script defer type="text/javascript" src="js/context_menu/history.js"></script>
+    <script defer type="text/javascript" src="js/context_menu/library.js"></script>
+    <script defer type="text/javascript" src="js/context_menu/options.js"></script>
+    <script defer type="text/javascript" src="js/context_menu/security.js"></script>
+    <script defer type="text/javascript" src="js/context_menu/settings.js"></script>
+    <script defer type="text/javascript" src="js/context_menu/webapps.js"></script>
+    <script type="text/javascript" src="js/about.js"></script>
+    <script defer type="text/javascript" src="js/search.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+  </head>
+  <body>
+    <div id="main-window">
+      <section class="responsive">
+        <span class="action-holder">
+          <button id="mainWindow-close"></button>
+          <button id="mainWindow-maximize"></button>
+          <button id="mainWindow-minimize"></button>
+        </span>
+        <div id="tabsToolbar">
+          <button id="tabsToolbar-sideTabs"></button>
+          <div id="tabsToolbar-tabs"></div>
+          <button id="tabsToolbar-newTab"></button>
+        </div>
+        <div id="tabsToolbar-tooltip">
+          <img src="" alt="" id="tabsToolbar-tooltip-favicon">
+          <p id="tabsToolbar-tooltip-title"></p>
+          <p id="tabsToolbar-tooltip-url"></p>
+          <hr id="tabsToolbar-tooltip-hr">
+          <p id="tabsToolbar-tooltip-audio" data-l10n-id="tab-audible"></p>
+          <img src="" alt="" id="tabsToolbar-tooltip-peak">
+        </div>
+        <div id="navbar">
+          <button id="navbar-back"></button>
+          <button id="navbar-forward"></button>
+          <button id="navbar-reload"></button>
+          <button id="navbar-home"></button>
+          <div id="navbar-urlbar-holder">
+            <button id="navbar-security"></button>
+            <input type="text" id="navbar-urlbar" placeholder="Type here to search or type a URL...">
+            <button id="navbar-addBookmark"></button>
+            <button id="navbar-findText"></button>
+          </div>
+          <button id="navbar-downloads"></button>
+          <button id="navbar-library"></button>
+          <div id="navbar-extensions"></div>
+          <button id="navbar-options"></button>
+        </div>
+      </section>
+      <div id="webviews">
+        <iframe id="webview-about-about"></iframe>
+        <iframe id="webview-about-home"></iframe>
+        <iframe id="webview-about-settings"></iframe>
+        <iframe id="webview-about-error"></iframe>
+      </div>
+      <div id="context-menu"></div>
+      <div id="urlbar-results"></div>
+      <div id="dialog-overlays">
+        <div id="dialog-alert">
+          <p id="dialog-alert-text"></p>
+          <button id="dialog-alert-ok" data-l10n-id="ok"></button>
+        </div>
+        <div id="dialog-confirm">
+          <header id="dialog-confirm-title"></header>
+          <p id="dialog-confirm-detail"></p>
+          <button id="dialog-confirm-ok" data-l10n-id="ok"></button>
+          <button id="dialog-confirm-cancel" data-l10n-id="cancel"></button>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="js/window.js"></script>
+  </body>
+</html>
